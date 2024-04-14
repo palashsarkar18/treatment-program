@@ -96,6 +96,6 @@ td {
   /* box-sizing: border-box; */
 }
 
-.date-number.completed {
+.date-number.activity {
   color: var(--calendar-green-color);
 }
