@@ -1,0 +1,101 @@
+@import url("./CalendarSettings.css");
+
+.calendar {
+  width: 100%;
+  max-width: 1000px; /* or the width specified in your design */
+  margin: 0 auto;
+  border: 2px solid var(--calendar-green-color);
+  box-shadow: 0 0 5px var(--calendar-black-color); /* Horizontal offset, vertical offset, blur radius, color */
+}
+
+.calendar-table {
+  table-layout: fixed;
+  width: 100%;
+  border: 1px solid var(--calendar-green-color);
+  border-collapse: collapse;
+}
+
+.header {
+  display: flex;
+  justify-content: center; /* Center children horizontally */
+  align-items: center; /* Center children vertically */
+  background-color: var(--calendar-white-color);
+  color: var(--calendar-black-color);
+  font-size: 20px;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 days a week */
+  text-align: center;
+}
+
+.header-cell,
+.cell {
+  border-right: 1px solid var(--calendar-green-color); /* Adjust or remove borders */
+  border-bottom: 1px solid var(--calendar-green-color);
+  padding: 10px; /* Adjust the padding as per your design */
+  border: 1px solid var(--calendar-green-color); /* Ensure border is the same for both */
+  text-align: center; /* Center the text in the cell */
+}
+
+.cell {
+  color: var(--calendar-black-color);
+}
+
+.header-cell {
+  width: 14.28%; /* 100% divided by 7 days to distribute width equally */
+  border-top: 1px solid var(--calendar-green-color);
+  border-left: 1px solid var(--calendar-green-color);
+}
+
+.selected,
+.cell:hover {
+  background-color: var(
+    --calendar-green-color
+  ); /* Adjust selection/hover color */
+  color: var(--calendar-white-color); /* Adjust text color on hover/selection */
+}
+
+.disabled {
+  /* visibility: hidden; The element becomes invisible, but the layout space is preserved */
+  color: transparent; /* Ensures text is transparent just in case visibility isn't respected */
+}
+
+h1 {
+  font-family: var(--font-fjalla-one);
+  /* font-size: var(--h1-font-size); */
+  /* line-height: var(--h1-line-height); */
+  /* font-weight: var(--h1-font-weight); */
+}
+
+h2 {
+  font-family: var(--font-libre-franklin);
+  /* font-size: var(--h2-font-size); */
+  /* font-weight: var(--h2-font-weight); */
+}
+
+h3 {
+  font-family: var(--font-libre-franklin);
+  font-size: var(--h3-font-size);
+  line-height: var(--h3-line-height);
+  font-weight: var(--h3-font-weight);
+}
+
+th {
+  font-family: var(--font-work-sans);
+  /* font-size: var(--th-font-size); */
+  /* font-weight: var(--th-font-weight); */
+  /* box-sizing: border-box; */
+}
+
+td {
+  font-family: var(--font-fjalla-one);
+  /* font-size: var(--th-font-size); */
+  /* font-weight: var(--th-font-weight); */
+  /* box-sizing: border-box; */
+}
+
+.date-number.completed {
+  color: var(--calendar-green-color);
+}
