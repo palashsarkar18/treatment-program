@@ -1,46 +1,176 @@
-# Getting Started with Create React App
+# Real-Time Calendar Application
+This project implements a real-time calendar application using Server-Sent Events (SSE) for real-time data updates and React for the frontend. The application displays a 3-week treatment program, dynamically updating the display as data changes on the server.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Structure
+The project is divided into two main directories to separate the frontend and backend code, ensuring clear modularity and easier dependency management.
 
-## Available Scripts
+```
+/my-app
+|-- /client                    # Contains all frontend code (React)
+|   |-- /src
+|   |   |-- /components
+|   |   |-- /hooks
+|   |   |-- App.js
+|   |   |-- index.js
+|   |-- /public
+|   |-- package.json
+|-- /server                    # Contains all backend code (Node.js/Express)
+|   |-- server.js
+|   |-- package.json
+|-- package.json               # Root package.json (optional, only if sharing dependencies)
+```
 
-In the project directory, you can run:
+### Client (Frontend)
+**/src**: Contains all React components, custom hooks, and the entry point (index.js).
 
-### `npm start`
+**/public**: Stores static files like index.html, images, and other assets.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**package.json**: Manages frontend dependencies and scripts.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Server (Backend)
+**server.js**: The main server file that configures and runs the Express server.
 
-### `npm test`
+**package.json**: Manages backend-specific dependencies and scripts.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Server Setup
+The server is built with Node.js and Express. It handles incoming API requests and pushes updates to the client using SSE.
 
-### `npm run build`
+### Key Dependencies
+**express**: Framework for handling HTTP requests.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**cors**: Middleware to enable CORS (Cross-Origin Resource Sharing).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Setup and Installation
+Clone the repository:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+git clone https://github.com/your-repo/my-app.git
+cd my-app
+// TODO: Checkout to the correct branch, fix the project name
+```
 
-### `npm run eject`
+### Install dependencies:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+For the frontend:
+bash
+Copy code
+cd client
+npm install
+For the backend:
+bash
+Copy code
+cd ../server
+npm install
+Running the application:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Start the frontend:
+bash
+Copy code
+cd client
+npm start
+Start the backend:
+bash
+Copy code
+cd ../server
+npm start
+Running the Server
+The server can be started with the following command from the /server directory:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+bash
+Copy code
+npm start
+It handles incoming API requests and pushes updates to the client using SSE.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Running the Client
+The client can be started with the following command from the /client directory:
 
-## Learn More
+bash
+Copy code
+npm start
+It uses React to render the UI based on the data received from the server through SSE.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Running the Server
+```
+cd server
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### API Endpoints
+**POST /api/treatment**: Receives and stores treatment programs.
+
+**GET /api/treatment**: Serves the current treatment program.
+
+**GET /events**: SSE endpoint that streams updates to the client.
+
+## Client Setup
+The client is a React application that uses the SSE hook to receive real-time updates and renders the treatment program accordingly.
+
+### Key Dependencies
+**react**
+
+**axios**: For making HTTP requests.
+
+**date-fns**: For date handling.
+
+### Running the Client
+```
+cd client
+npm install
+npm start
+```
+## Custom Hooks
+**useSSE**: This hook manages the SSE connection, listens for messages, and updates the component state.
+
+```
+const useSSE = <T,>(url: string): { data: T | null, error: boolean } => {
+    const [data, setData] = useState<T | null>(null);
+    const [error, setError] = useState<boolean>(false);
+
+    useEffect(() => {
+        const eventSource = new EventSource(url);
+
+        eventSource.onmessage = event => {
+            try {
+                const parsedData: T = JSON.parse(event.data);
+                setData(parsedData);
+            } catch (err) {
+                console.error("Failed to parse SSE data", err);
+                setError(true);
+            }
+        };
+
+        eventSource.onerror = event => {
+            console.error("SSE connection error:", event);
+            setError(true);
+            eventSource.close();
+        };
+
+        return () => {
+            eventSource.close();
+        };
+    }, [url]);
+
+    return { data, error };
+};
+```
+
+## Troubleshooting
+**Common Issues**
+
+1. **Elements Not Visible**: Ensure no CSS rules hide elements, and check for JavaScript errors that may affect rendering.
+
+2. **SSE Connection Issues**: Verify server headers, ensure CORS settings are correct, and check network activity for continuous connections.
+
+3.**Data Parsing Errors**: Handle errors gracefully in both server and client code to manage malformed data or connection issues.
+
+## Useful Commands
+Inspect network activity in the browser to diagnose connection issues:
+
+* Open Developer Tools (F12)
+* Go to the "Network" tab
+* Look for the /events request and check the response stream.
+
+
+## Conclusion
+This project demonstrates the use of SSE in a full-stack JavaScript application to enable real-time data updates in a web application. Adjust configurations and troubleshoot with the provided guidelines to ensure robust operation.
