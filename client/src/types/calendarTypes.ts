@@ -1,5 +1,12 @@
 export interface ProgramDay {
-  weekday: string;
+  weekday:
+    | "MONDAY"
+    | "TUESDAY"
+    | "WEDNESDAY"
+    | "THURSDAY"
+    | "FRIDAY"
+    | "SATURDAY"
+    | "SUNDAY";
   title: string;
   completed: boolean;
   date?: string;

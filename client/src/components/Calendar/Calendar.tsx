@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React from 'react';
 import { format, getWeek } from "date-fns";
-
 import "./Calendar.css"; // Make sure the path matches where you place your CSS file
-import { ProgramDay, ProgramData } from "../../types/calendarTypes"; // Adjust the path as necessary
+
+import { ProgramDay, ProgramData } from "../../types/calendarTypes";
 import {
   generateMonth,
   findIncompleteActivities,
 } from "../../utils/calendarUtils";
-
 import Day from "./Day";
 import Weekdays from "./Weekdays";
+import useSSE from '../../hooks/useSSE'; // Import the custom SSE hook
 
-// Import your JSON data
-const programData: ProgramData = require("./program.json");
 
 // TODO: Check validity of programData
 // * Future events should always have "completed" as false.
@@ -21,18 +19,30 @@ const programData: ProgramData = require("./program.json");
 // Only one activity per day.
 
 const Calendar: React.FC = () => {
-  const [currentDate] = useState(() => {
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    return date;
-  });
+  
+  const { data: programData, error } = useSSE<ProgramData>('http://localhost:5000/events');
 
+    if (error) {
+        return <div>Error while fetching data!</div>;
+    }
+
+    if (!programData) {
+        return <div>Loading...</div>;
+    }
+
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  
   const renderDays = () => {
     const weeks = generateMonth();
-    const incompleteActivities: ProgramDay[] = findIncompleteActivities(
-      programData,
-      new Date().getFullYear()
-    ); // Get incomplete activities
+    let incompleteActivities: ProgramDay[] | undefined;
+
+    if (programData) {
+      incompleteActivities = findIncompleteActivities(
+        programData,
+        new Date().getFullYear()
+      ); // Get incomplete activities
+    }
 
     // TODO: incompleteActivities has UTC tmezone. Make sure that it works correctly.
     // TODO: Make sure incompleteActivities is sorted in order of the date object.
@@ -57,9 +67,13 @@ const Calendar: React.FC = () => {
 
   const getDayActivity = (
     day: Date,
-    incompleteActivities: ProgramDay[]
+    incompleteActivities: ProgramDay[] | undefined
   ): ProgramDay | undefined => {
     let dayActivity: ProgramDay | undefined;
+
+    if (!programData) {
+      return dayActivity;
+    }
 
     const isFuture = day >= currentDate;
 
@@ -90,8 +104,11 @@ const Calendar: React.FC = () => {
           // Show all the current and future activities
           dayActivity = programDay;
           break;
-        } else if (isFuture && incompleteActivities.length > 0) {
-          console.log("I AM HERE 1");
+        } else if (
+          isFuture &&
+          incompleteActivities &&
+          incompleteActivities.length > 0
+        ) {
           dayActivity = incompleteActivities.shift();
           break;
         }
@@ -101,7 +118,6 @@ const Calendar: React.FC = () => {
       incompleteActivities &&
       incompleteActivities.length > 0
     ) {
-      console.log("I AM HERE 2");
       dayActivity = incompleteActivities.shift(); // This assumes that `findIncompleteActivities` returns activities in order they should be moved.
       // TODO: This area requires further work I suppose.
     }

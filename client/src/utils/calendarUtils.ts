@@ -55,7 +55,6 @@ export const findIncompleteActivities = (
   Object.entries(programData).forEach(
     ([weekKey, week]: [string, ProgramDay[]]) => {
       const weekNumber = parseInt(weekKey.replace("week", "")); // Extract the week number from the key
-
       week.forEach((programDay: ProgramDay) => {
         const date: Date = getDateFromWeekAndDay(
           programDay.weekday,
