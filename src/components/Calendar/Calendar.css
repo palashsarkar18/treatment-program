@@ -64,15 +64,15 @@
 
 h1 {
   font-family: var(--font-fjalla-one);
-  /* font-size: var(--h1-font-size); */
+  font-size: var(--h1-font-size);
   /* line-height: var(--h1-line-height); */
   /* font-weight: var(--h1-font-weight); */
 }
 
 h2 {
   font-family: var(--font-libre-franklin);
-  /* font-size: var(--h2-font-size); */
-  /* font-weight: var(--h2-font-weight); */
+  font-size: var(--h2-font-size);
+  font-weight: var(--h2-font-weight);
 }
 
 h3 {
@@ -84,15 +84,17 @@ h3 {
 
 th {
   font-family: var(--font-work-sans);
-  /* font-size: var(--th-font-size); */
-  /* font-weight: var(--th-font-weight); */
-  /* box-sizing: border-box; */
+  font-size: var(--th-font-size);
+  font-weight: var(--th-font-weight);
+  box-sizing: border-box;
 }
 
 td {
   font-family: var(--font-fjalla-one);
+  /* font-family: var(--font-libre-franklin); */
+  /* font-family: var(--font-work-sans); */
   /* font-size: var(--th-font-size); */
-  /* font-weight: var(--th-font-weight); */
+  font-weight: var(--td-font-weight);
   /* box-sizing: border-box; */
 }
 

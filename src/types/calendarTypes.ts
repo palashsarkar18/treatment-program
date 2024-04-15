@@ -5,8 +5,8 @@ export interface ProgramDay {
   date?: string;
 }
 
-export type ProgramWeek = ProgramDay[];
+// export type ProgramWeek = ProgramDay[];
 
 export interface ProgramData {
-  [key: string]: ProgramWeek;
+  [key: string]: ProgramDay[];
 }
