@@ -18,8 +18,8 @@ interface DayProps {
  */
 const Day: React.FC<DayProps> = ({ day, currentDate, dayActivity }) => {
   // Log the rendering of the day for debugging purposes.
-  console.log(`Rendering day: ${format(day, "yyyy-MM-dd")}`);
-  console.log(day, " vs ", dayActivity);
+  // console.log(`Rendering day: ${format(day, "yyyy-MM-dd")}`);
+  // console.log(day, " vs ", dayActivity);
   
   // Determine the CSS classes for the day cell based on whether it's the current day,
   // a day in the current month, or associated with an activity.

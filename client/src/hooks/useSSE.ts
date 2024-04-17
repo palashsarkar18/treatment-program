@@ -1,31 +1,26 @@
 import { useEffect, useState } from 'react';
 
-/**
- * A custom hook to manage a Server-Sent Events (SSE) connection.
- * @param url The URL to connect for SSE.
- * @returns The latest data received from the SSE connection and any errors.
- */
-export const useSSE = <T,>(url: string): { data: T | null, error: boolean } => {
+export const useSSE = <T,>(url: string): { data: T | null; error: boolean } => {
     const [data, setData] = useState<T | null>(null);
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
-        const eventSource = new EventSource(url);
-        eventSource.onmessage = event => {
-            console.log("Event data received:", event.data); // Check raw data
+        const token = localStorage.getItem('token'); // Retrieve the stored token
+        console.log("token: ", token);
+        const eventSource = new EventSource(`${url}?token=${token}`);
 
+        eventSource.onmessage = event => {
             try {
                 const parsedData: T = JSON.parse(event.data);
-                console.log("parsedData", parsedData)
                 setData(parsedData);
-            } catch (err) {
-                console.error("Failed to parse SSE data", err);
+            } catch (error) {
+                console.error("Failed to parse SSE data:", error);
                 setError(true);
             }
         };
 
         eventSource.onerror = event => {
-            console.error("SSE error:", event);
+            console.error("EventSource error:", event);
             setError(true);
             eventSource.close();
         };
@@ -37,5 +32,3 @@ export const useSSE = <T,>(url: string): { data: T | null, error: boolean } => {
 
     return { data, error };
 };
-
-export default useSSE;

@@ -6,7 +6,7 @@ interface WeekdaysProps {
 }
 
 const Weekdays: React.FC<WeekdaysProps> = ({ currentDate }) => {
-  console.log("Calendar render");
+  // console.log("Calendar render");
   // Get the start of the week (Monday)
   const start = startOfWeek(currentDate, { weekStartsOn: 1 });
 

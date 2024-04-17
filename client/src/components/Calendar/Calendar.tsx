@@ -10,7 +10,7 @@ import {
 } from "../../utils/utility";
 import Day from "./Day";
 import Weekdays from "./Weekdays";
-import useSSE from '../../hooks/useSSE'; // Import the custom SSE hook
+import { useSSE } from '../../hooks/useSSE'; // Import the custom SSE hook
 
 
 // TODO: Check validity of programData

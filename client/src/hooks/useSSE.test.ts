@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import useSSE from './useSSE';
+import { useSSE } from './useSSE';
 
 describe('useSSE hook', () => {
   // Mock EventSource implementation
