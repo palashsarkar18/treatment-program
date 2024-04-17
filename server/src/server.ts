@@ -2,12 +2,20 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import rateLimit from 'express-rate-limit';
 import { isValidTreatmentProgram } from './validators/validateTreatmentProgram';
 import { authenticateToken } from './middlewares/authenticateToken';
 
 
 const app: Express = express();
 const PORT: number = 5000;
+
+// Create a rate limiter configuration
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again after a while.'
+});
 
 app.use(express.json());
 
@@ -64,7 +72,7 @@ app.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-app.post('/api/treatment', authenticateToken, (req: Request, res: Response) => {
+app.post('/api/treatment', apiLimiter, authenticateToken, (req: Request, res: Response) => {
     const validation = isValidTreatmentProgram(req.body);
 
     if (!validation.isValid) {
@@ -77,7 +85,7 @@ app.post('/api/treatment', authenticateToken, (req: Request, res: Response) => {
     res.status(200).send("Treatment program received and stored successfully");
 });
 
-app.get('/api/treatment', authenticateToken, (req: Request, res: Response) => {
+app.get('/api/treatment', apiLimiter, authenticateToken, (req: Request, res: Response) => {
     if (treatmentProgram) {
         res.json(treatmentProgram);
     } else {
@@ -85,7 +93,7 @@ app.get('/api/treatment', authenticateToken, (req: Request, res: Response) => {
     }
 });
 
-app.get('/events', authenticateToken, (req: Request, res: Response) => {
+app.get('/events', apiLimiter, authenticateToken, (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
