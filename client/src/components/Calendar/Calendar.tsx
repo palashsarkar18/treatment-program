@@ -1,12 +1,13 @@
 import React from 'react';
-import { format, getWeek } from "date-fns";
+import { format } from "date-fns";
 import "./Calendar.css"; // Make sure the path matches where you place your CSS file
 
 import { ProgramDay, ProgramData } from "../../types/calendarTypes";
 import {
   generateMonth,
   findIncompleteActivities,
-} from "../../utils/calendarUtils";
+  getDayActivity,
+} from "../../utils/utility";
 import Day from "./Day";
 import Weekdays from "./Weekdays";
 import useSSE from '../../hooks/useSSE'; // Import the custom SSE hook
@@ -22,16 +23,9 @@ const Calendar: React.FC = () => {
   
   const { data: programData, error } = useSSE<ProgramData>('http://localhost:5000/events');
 
-    if (error) {
-        return <div>Error while fetching data!</div>;
-    }
-
-    if (!programData) {
-        return <div>Loading...</div>;
-    }
-
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
+  // currentDate.setDate(currentDate.getDate() + 11); // TODO: Delete this.
   
   const renderDays = () => {
     const weeks = generateMonth();
@@ -39,8 +33,8 @@ const Calendar: React.FC = () => {
 
     if (programData) {
       incompleteActivities = findIncompleteActivities(
-        programData,
-        new Date().getFullYear()
+        currentDate,
+        programData
       ); // Get incomplete activities
     }
 
@@ -56,7 +50,7 @@ const Calendar: React.FC = () => {
                 key={format(day, "yyyy-MM-dd")}
                 day={day}
                 currentDate={currentDate}
-                dayActivity={getDayActivity(day, incompleteActivities)}
+                dayActivity={getDayActivity(day, currentDate, incompleteActivities, programData)}
               />
             ))}
           </tr>
@@ -65,65 +59,23 @@ const Calendar: React.FC = () => {
     );
   };
 
-  const getDayActivity = (
-    day: Date,
-    incompleteActivities: ProgramDay[] | undefined
-  ): ProgramDay | undefined => {
-    let dayActivity: ProgramDay | undefined;
+  if (error) {
+    return <div>Error while fetching data!</div>;
+  }
 
-    if (!programData) {
-      return dayActivity;
-    }
-
-    const isFuture = day >= currentDate;
-
-    console.log(
-      `day: ${day} >= currentDate: ${currentDate} ? isFuture ${isFuture}`
+  if (!programData) {
+    return (
+      <div className="calendar">
+        <div className="header">
+          <h1>Weekly Program</h1>
+        </div>
+        <table className="calendar-table">
+          <Weekdays currentDate={currentDate} />
+          {renderDays()}
+        </table>
+      </div>
     );
-
-    const week: ProgramDay[] = programData[`week${getWeek(day)}`];
-
-    //   console.log("incompleteActivities: ", incompleteActivities);
-
-    if (week) {
-      for (const programDay of week) {
-        if (
-          !isFuture &&
-          programDay.completed &&
-          programDay.weekday ===
-            day.toLocaleString("en-US", { weekday: "long" }).toUpperCase()
-        ) {
-          // Show all the completed past activities
-          dayActivity = programDay;
-          break;
-        } else if (
-          isFuture &&
-          programDay.weekday ===
-            day.toLocaleString("en-US", { weekday: "long" }).toUpperCase()
-        ) {
-          // Show all the current and future activities
-          dayActivity = programDay;
-          break;
-        } else if (
-          isFuture &&
-          incompleteActivities &&
-          incompleteActivities.length > 0
-        ) {
-          dayActivity = incompleteActivities.shift();
-          break;
-        }
-      }
-    } else if (
-      isFuture &&
-      incompleteActivities &&
-      incompleteActivities.length > 0
-    ) {
-      dayActivity = incompleteActivities.shift(); // This assumes that `findIncompleteActivities` returns activities in order they should be moved.
-      // TODO: This area requires further work I suppose.
-    }
-
-    return dayActivity;
-  };
+  }
 
   return (
     <div className="calendar">
@@ -131,7 +83,7 @@ const Calendar: React.FC = () => {
         <h1>Weekly Program</h1>
       </div>
       <table className="calendar-table">
-        <Weekdays />
+        <Weekdays currentDate={currentDate} />
         {renderDays()}
       </table>
     </div>

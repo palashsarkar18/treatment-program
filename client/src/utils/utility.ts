@@ -8,6 +8,7 @@ import {
   startOfYear,
   addWeeks,
   getISOWeek,
+  getWeek
 } from "date-fns";
 
 import { ProgramDay, ProgramData } from "../types/calendarTypes"; // Adjust the path as necessary
@@ -42,11 +43,11 @@ export const generateMonth = () => {
 };
 
 export const findIncompleteActivities = (
-  programData: ProgramData,
-  currentYear: number
+  currentDate: Date,
+  programData: ProgramData
 ): ProgramDay[] => {
-  const today = startOfDay(new Date());
-  let incompleteActivities: ProgramDay[] = [];
+  const today = startOfDay(currentDate);
+  const incompleteActivities: ProgramDay[] = [];
 
   Object.entries(programData).forEach(
     ([weekKey, week]: [string, ProgramDay[]]) => {
@@ -55,7 +56,7 @@ export const findIncompleteActivities = (
         const date: Date = getDateFromWeekAndDay(
           programDay.weekday,
           weekNumber,
-          currentYear
+          currentDate.getFullYear()
         );
 
         // Check if the activity is not completed and the calculated date is in the past
@@ -68,7 +69,6 @@ export const findIncompleteActivities = (
       });
     }
   );
-
   return incompleteActivities;
 };
 
@@ -105,4 +105,57 @@ export const getDateFromWeekAndDay = (
 
   // Calculate the date by adding the dayOffset to the Monday of the week
   return addDays(weekDayMon, dayOffset);
+};
+
+export const getDayActivity = (
+  calendarDay: Date,
+  currentDate: Date,
+  incompleteActivities: ProgramDay[] | undefined,
+  programActivities: ProgramData | null
+): ProgramDay | undefined => {
+
+  // The calendar day is not for the same month. Hence dreturn undefined.
+  if (calendarDay.getMonth() !== currentDate.getMonth()) {
+    console.log(`Returning nothing for ${calendarDay} because it is out of range`);
+    return undefined;
+  }
+
+  // There is no program activity specified. Hence return undefined.
+  if (!programActivities) {
+    console.log(`Returning nothing for ${calendarDay} because program activity is not specified`);
+    return undefined;
+  }
+
+  const isFuture = calendarDay >= currentDate;
+
+  console.log(
+    `day: ${calendarDay} >= currentDate: ${currentDate} ? isFuture ${isFuture}`
+  );
+
+  const weekActivityOnCalendarDay: ProgramDay[] = programActivities[`week${getWeek(calendarDay)}`];
+
+  console.log("incompleteActivities: ", JSON.stringify(incompleteActivities));
+
+  if (weekActivityOnCalendarDay) {
+    const dayOfWeek = calendarDay.toLocaleString("en-US", { weekday: "long" }).toUpperCase();
+    const dayActivity = weekActivityOnCalendarDay.find(pd => pd.weekday === dayOfWeek); // 'pd' is now correctly typed as ProgramDay
+
+    if (dayActivity && !isFuture && dayActivity.completed) {
+      console.log(`Returning scheduled past and completed activity for ${calendarDay}:`, dayActivity);
+      return dayActivity;
+    } 
+
+    if (dayActivity && isFuture) {
+      console.log(`Returning scheduled future activity for ${calendarDay}:`, dayActivity);
+      return dayActivity;
+    }
+  }
+
+  if (isFuture && incompleteActivities && incompleteActivities.length > 0) {
+    console.log(`Returning incomplete for ${calendarDay}`);
+    return incompleteActivities.shift();
+  }
+
+  console.log(`Returning nothing for ${calendarDay}. Existing incompleteActivities`, incompleteActivities);
+  return undefined;
 };

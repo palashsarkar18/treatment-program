@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "module": "commonjs", // Jest best works with CommonJS
+      "noEmit": false // Allow emission for jest transformations
+    },
+    "include": [
+      "src/**/*",
+      "__tests__/**/*" // Include test directories if they are outside 'src'
+    ]
+  }
+  

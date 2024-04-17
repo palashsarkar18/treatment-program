@@ -1,10 +1,14 @@
 import React from "react";
 import { format, startOfWeek, addDays } from "date-fns";
 
-const Weekdays: React.FC = () => {
+interface WeekdaysProps {
+  currentDate: Date; // Define the type of currentDate as Date
+}
+
+const Weekdays: React.FC<WeekdaysProps> = ({ currentDate }) => {
   console.log("Calendar render");
   // Get the start of the week (Monday)
-  const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const start = startOfWeek(currentDate, { weekStartsOn: 1 });
 
   // Generate the weekdays using a loop to add days
   // TODO: Could this statement be combined into one?

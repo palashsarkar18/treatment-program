@@ -1,11 +1,19 @@
 # Real-Time Calendar Application
 This project implements a real-time calendar application using Server-Sent Events (SSE) for real-time data updates and React for the frontend. The application displays a 3-week treatment program, dynamically updating the display as data changes on the server.
 
+TODO:
+1. Unit test cases for components.
+2. Integration test case
+3. Use of Postman?
+4. Algorithm fixes
+5. Add security? Very basic one
+6. Future activity of input should always be false.
+
 ## Project Structure
 The project is divided into two main directories to separate the frontend and backend code, ensuring clear modularity and easier dependency management.
 
 ```
-/my-app
+/meru-health-app
 |-- /client                    # Contains all frontend code (React)
 |   |-- /src
 |   |   |-- /components
@@ -174,3 +182,8 @@ Inspect network activity in the browser to diagnose connection issues:
 
 ## Conclusion
 This project demonstrates the use of SSE in a full-stack JavaScript application to enable real-time data updates in a web application. Adjust configurations and troubleshoot with the provided guidelines to ensure robust operation.
+
+## Additional text
+
+Why TypeScript 4.9.5?
+The project uses react-scripts@5.0.1, which has specific peer dependency requirements for TypeScript. Using TypeScript version 4.9.5 ensures that there are no compatibility issues with the build and tooling provided by react-scripts. Higher versions of TypeScript have led to conflicts during project setup and build processes, as identified during initial development attempts.

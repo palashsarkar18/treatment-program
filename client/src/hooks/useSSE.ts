@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
  * @param url The URL to connect for SSE.
  * @returns The latest data received from the SSE connection and any errors.
  */
-const useSSE = <T,>(url: string): { data: T | null, error: boolean } => {
+export const useSSE = <T,>(url: string): { data: T | null, error: boolean } => {
     const [data, setData] = useState<T | null>(null);
     const [error, setError] = useState<boolean>(false);
 

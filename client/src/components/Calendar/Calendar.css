@@ -49,8 +49,13 @@
   border-left: 1px solid var(--calendar-green-color);
 }
 
+.date-number.activity {
+  color: var(--calendar-green-color);
+}
+
 .selected,
-.cell:hover {
+.cell:hover,
+.cell:hover .date-number.activity {
   background-color: var(
     --calendar-green-color
   ); /* Adjust selection/hover color */
@@ -96,8 +101,4 @@ td {
   /* font-size: var(--th-font-size); */
   font-weight: var(--td-font-weight);
   /* box-sizing: border-box; */
-}
-
-.date-number.activity {
-  color: var(--calendar-green-color);
 }
