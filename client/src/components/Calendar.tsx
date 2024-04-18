@@ -20,8 +20,11 @@ import { useSSE } from '../hooks/useSSE'; // Import the custom SSE hook
 // Only one activity per day.
 
 const Calendar: React.FC = () => {
+
+  const apiBaseUrl: string = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL : 'http://localhost:5000';
+  const eventsUrl = `${apiBaseUrl}${process.env.REACT_APP_EVENTS_ENDPOINT}`;
   
-  const { data: programData, error } = useSSE<ProgramData>('http://localhost:5000/events');
+  const { data: programData, error } = useSSE<ProgramData>(eventsUrl);
 
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);

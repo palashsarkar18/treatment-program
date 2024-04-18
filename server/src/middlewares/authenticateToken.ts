@@ -19,7 +19,12 @@ export function authenticateToken(req: ExtendedRequest, res: Response, next: Nex
     return res.sendStatus(401);
   } 
 
-  jwt.verify(token, process.env.SECRET_KEY || SECRET_KEY, (err, decoded) => { // TODO: Better to assign in process.env
+  if (!SECRET_KEY) {
+    console.error('SECRET_KEY is missing');
+    return res.sendStatus(403);
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
         console.log('Token verification failed:', err);
       return res.sendStatus(403);

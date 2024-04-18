@@ -17,6 +17,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+# .env.development # Ideally this should not be committed, however the file is included for this assignment
 
 npm-debug.log*
 yarn-debug.log*

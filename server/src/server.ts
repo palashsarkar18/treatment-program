@@ -1,14 +1,19 @@
-import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import express, { Express, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
 import { isValidTreatmentProgram } from './validators/validateTreatmentProgram';
 import { authenticateToken } from './middlewares/authenticateToken';
 
-
+dotenv.config();
 const app: Express = express();
-const PORT: number = 5000;
+const PORT: number =  parseInt(process.env.PORT || '5000', 10); // Provide a default value in case it's not set
+if (isNaN(PORT)) {
+    console.error('Invalid port number provided in environment');
+    process.exit(1); // Exit the process with an error code
+}
 
 // Create a rate limiter configuration
 const apiLimiter = rateLimit({
@@ -24,18 +29,22 @@ interface User {
     password: string;
   }
 
-export const SECRET_KEY = '4911d0ea50cf3127b490dd1d7d065ffc846009c5168607ea64a9930c7e982e9c08f8021c1873714892b19641af35df1e200f18e78bc60aa78fedf1ba28255895'; // Move this to environment variables in production
+const SECRET_KEY = process.env.SECRET_KEY;
+if (!SECRET_KEY) {
+    throw new Error('SECRET_KEY must be defined.');
+}
+export { SECRET_KEY };
 
 // Hardcoded credentials for demonstration
 const users: { [key: string]: User } = {
     admin: {
-        username: 'admin',
-        password: '$2a$10$P3rpj98OZ9ap2Grvb0yTGO4OvbBA9JR9IlgC/FY.SYADIF03EC.ee', // This should be the hash of "admin123"
+        username: process.env.ADMIN_USERNAME || 'admin', // Default value as 'admin' if not set
+        password: process.env.ADMIN_PASSWORD || '', // No default password
     }
 };
 
 app.use(cors({
-    origin: 'http://localhost:3000', // Client URL
+    origin: process.env.CLIENT_URL, // Client URL
     credentials: true,
     methods: ["GET", "POST"] // Allowable methods
 }));
@@ -109,7 +118,7 @@ app.get('/events', apiLimiter, authenticateToken, (req: Request, res: Response) 
 
 if (require.main === module) {
     app.listen(PORT, () => {
-        console.log(`Server is running at http://localhost:${PORT}`);
+        console.log(`Server is running at ${process.env.SERVER_URL}:${PORT}`);
     });
 }
 

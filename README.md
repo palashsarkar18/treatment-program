@@ -201,7 +201,7 @@ $response = Invoke-WebRequest -Uri "http://localhost:5000/login" -Method Post -C
 $response.Content
 
 # Assuming $token holds your JWT
-$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzNDM4MDMxLCJleHAiOjE3MTM0NDE2MzF9.79tqMF7gLkq688qSLxGkJMg2lYHGjvbfdREslBFyho8'
+$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzNDQ3MzY4LCJleHAiOjE3MTM0NTA5Njh9.ki8Yr4WfEwCWgWp5eNWt5ZmBS9z8Z--xGHzWHUel7pc'
 
 # Setting up the header with the Authorization including the token
 $headers = @{

@@ -10,15 +10,27 @@ const App: React.FC = () => {
 
     useEffect(() => {
         const doLogin = async () => {
-            try {
-                await login('admin', 'admin123');
-                setAuthenticated(true);  // Update state to indicate the user is logged in
-                setLoading(false);  // Set loading to false once login is successful
-                console.log('Logged in successfully');
-            } catch (error) {
-                console.error('Login error:', error);
-                setError('Login failed, please try again.');  // Set error message
-                setLoading(false);  // Ensure loading state is updated even on error
+
+            const username = process.env.REACT_APP_ADMIN_USER;
+            const password = process.env.REACT_APP_ADMIN_PASSWORD;
+            
+            if (!username || !password) {
+                console.error('Environment variables for username and password are not set.');
+                setError('Login configuration error.');
+                setLoading(false);
+            } else {
+                try {
+                
+                
+                    await login(username, password);
+                    setAuthenticated(true);  // Update state to indicate the user is logged in
+                    setLoading(false);  // Set loading to false once login is successful
+                    console.log('Logged in successfully');
+                } catch (error) {
+                    console.error('Login error:', error);
+                    setError('Login failed, please try again.');  // Set error message
+                    setLoading(false);  // Ensure loading state is updated even on error
+                }
             }
         };
 
