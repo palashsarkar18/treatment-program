@@ -1,31 +1,42 @@
+import { startOfMonth, addDays, startOfWeek, getISOWeek } from 'date-fns';
+
 /**
  * Validates the structure and constraints of a treatment program.
  * 
  * @param program The treatment program object to be validated.
+ * @param currentDate The current date used for reference.
  * @returns An object indicating whether the program is valid and an error message if it is not.
  */
 export const isValidTreatmentProgram = (program: any, currentDate: Date = new Date()): { isValid: boolean; errorMessage?: string } => {
-    // Check if the program is an object and not null.
     if (typeof program !== 'object' || program === null) {
         return { isValid: false, errorMessage: "Program must be a non-null object." };
     }
 
-    // Check if the program contains exactly three weeks.
     const keys = Object.keys(program);
     if (keys.length !== 3) {
         return { isValid: false, errorMessage: "Program must contain exactly three weeks." };
     }
 
-    // Check for consecutive week numbers starting from the first full week.
-    const weekNumbers = keys.map(key => parseInt(key.replace("week", ""), 10)).sort((a, b) => a - b);
-    if (!weekNumbers.every((num, i, arr) => i === 0 || num === arr[i - 1] + 1)) {
+    const sortedWeekNumbers = keys.map(key => parseInt(key.replace("week", ""), 10)).sort((a, b) => a - b);
+    const firstWeekNumber = sortedWeekNumbers[0]; // Smallest week number
+    const year = currentDate.getFullYear();
+
+    // Calculate the starting date of the first week
+    const firstWeekStartDate = getDateFromISOWeek(firstWeekNumber, year);
+    const monthStart = startOfMonth(firstWeekStartDate);
+    const firstFullWeekStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+
+    // Validate first full week
+    if (getISOWeek(firstFullWeekStart) !== getISOWeek(firstWeekStartDate)) {
+        return { isValid: false, errorMessage: "The first week does not start on the first full week of its month." };
+    }
+
+    if (!sortedWeekNumbers.every((num, i, arr) => i === 0 || num === arr[i - 1] + 1)) {
         return { isValid: false, errorMessage: "Week numbers must be consecutive." };
     }
 
     for (const key of keys) {
         const activities = program[key];
-
-        // Validate the structure of each week.
         if (!Array.isArray(activities) || !activities.every(activity => 
             ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].includes(activity.weekday)
             && typeof activity.title === 'string'
@@ -33,39 +44,45 @@ export const isValidTreatmentProgram = (program: any, currentDate: Date = new Da
             return { isValid: false, errorMessage: `Invalid activities structure in ${key}.` };
         }
 
-        // Validate that future activities should always have activity.completed as false
-        currentDate.setHours(0, 0, 0, 0); // Normalize current date to start of day
-
-        const weekNumber = parseInt(key.replace("week", ""), 10); // 10, specifies the base (radix) for the conversion, indicating that the number is in base-10 (decimal)
-
+        const weekNumber = parseInt(key.replace("week", ""), 10);
         for (const activity of activities) {
-
-            // Use helper function to calculate the date for the activity
-            const activityDate = getDateFromWeek(weekNumber, activity.weekday, currentDate.getFullYear());
+            const activityDate = getDateFromISOWeek(weekNumber, year, activity.weekday);
             if (activityDate > currentDate && activity.completed) {
-                return {
-                isValid: false,
-                errorMessage: `Future activity in ${key} should not be marked as completed.`,
-                };
+                return { isValid: false, errorMessage: `Future activity in ${key} should not be marked as completed.` };
             }
         }        
     }
 
-    // If all checks pass, return valid.
     return { isValid: true };
 }
 
 /**
- * Calculates the date given a week number and weekday within a specific year.
+ * Calculates the date given a week number, weekday, and year.
  * 
  * @param weekNumber The ISO week number.
- * @param weekday The name of the day (e.g., "MONDAY").
- * @param year The year to calculate the date in.
- * @returns A Date object representing the specified weekday in the specified week of the specified year.
+ * @param year The year to calculate the week's start date.
+ * @param weekday The day of the week (optional, defaults to Monday).
+ * @returns A Date object representing the start of the specified week or a specific weekday in that week.
  */
-const getDateFromWeek = (weekNumber: number, weekday: string, year: number): Date => {
-    const firstDayOfYear = new Date(year, 0, 1);
-    const days = (weekNumber - 1) * 7 + ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"].indexOf(weekday);
-    // Calculate the date of the given weekday on the given week number
-    return new Date(firstDayOfYear.setDate(firstDayOfYear.getDate() + days - firstDayOfYear.getDay()));
+function getDateFromISOWeek(weekNumber: number, year: number, weekday: string = "MONDAY"): Date {
+    const simple = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+    const dow = simple.getDay();
+    const ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+
+    const dayOffsets: { [key: string]: number } = {
+        MONDAY: 0,
+        TUESDAY: 1,
+        WEDNESDAY: 2,
+        THURSDAY: 3,
+        FRIDAY: 4,
+        SATURDAY: 5,
+        SUNDAY: 6,
+    };
+
+    // Adjust the start day to the specific weekday
+    return addDays(ISOweekStart, dayOffsets[weekday]);
 }

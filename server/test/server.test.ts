@@ -100,4 +100,24 @@ describe('API Treatment Endpoint Tests', () => {
         expect(result.errorMessage).toEqual("Future activity in week16 should not be marked as completed.");
 
     });
+
+    // Test case to invalidate those activities where future activities are set to true.
+    it('should reject treatment program structure', async () => {
+
+        const testDate: Date = new Date(2024, 3, 15) // April 15, 2024 Monday. Week 16.
+        // Define a valid treatment program data structure.
+        const invalidProgram = {
+            week15: [{ weekday: 'MONDAY', title: 'Valid Activity', completed: true }],
+            week16: [{ weekday: 'WEDNESDAY', title: 'Valid Activity', completed: false }],
+            week17: [{ weekday: 'FRIDAY', title: 'Valid Activity', completed: false }], // This is a future event
+        };
+        
+        // Call the function with the invalid program and the test date
+        const result = isValidTreatmentProgram(invalidProgram, testDate);
+
+        // Check if the function returned the expected invalid result
+        expect(result.isValid).toBe(false);
+        expect(result.errorMessage).toEqual("The first week does not start on the first full week of its month.");
+
+    });
 });
