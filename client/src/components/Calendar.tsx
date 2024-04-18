@@ -1,7 +1,6 @@
 import React from 'react';
 import { format } from "date-fns";
-import "./Calendar.css"; // Make sure the path matches where you place your CSS file
-
+import "./Calendar.css"; 
 import { ProgramDay, ProgramData } from "../types/calendarTypes";
 import {
   generateMonth,
@@ -10,39 +9,37 @@ import {
 } from "../utils/utility";
 import Day from "./Day";
 import Weekdays from "./Weekdays";
-import { useSSE } from '../hooks/useSSE'; // Import the custom SSE hook
+import { useSSE } from '../hooks/useSSE'; // Importing the custom SSE hook for real-time data
 
-
-// TODO: Check validity of programData
-// * Future events should always have "completed" as false.
-// * There should be three consecutive weeks only.
-// * The program should always start on the first full week of the month.
-// Only one activity per day.
-
+/**
+ * Calendar Component
+ * 
+ * Renders a monthly calendar view that interacts with real-time data using Server-Sent Events (SSE).
+ * It displays days, weeks, and the activities scheduled for each day as fetched from the server.
+ *
+ * The component handles data fetching, error states, and date calculations internally,
+ * providing a comprehensive view of scheduled programs.
+ */
 const Calendar: React.FC = () => {
-
+  // Construct the URL for fetching events data based on environment configuration
   const apiBaseUrl: string = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL : 'http://localhost:5000';
   const eventsUrl = `${apiBaseUrl}${process.env.REACT_APP_EVENTS_ENDPOINT}`;
-  
+
+  // Use the custom SSE hook to subscribe to real-time updates
   const { data: programData, error } = useSSE<ProgramData>(eventsUrl);
 
+  // Initialize the current date and reset time to midnight
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
-  // currentDate.setDate(currentDate.getDate() + 11); // TODO: Delete this.
-  
+
+  // Function to render days in the calendar using utility functions for date management
   const renderDays = () => {
-    const weeks = generateMonth();
+    const weeks = generateMonth(); // Generate the entire month's week structure
     let incompleteActivities: ProgramDay[] | undefined;
 
     if (programData) {
-      incompleteActivities = findIncompleteActivities(
-        currentDate,
-        programData
-      ); // Get incomplete activities
+      incompleteActivities = findIncompleteActivities(currentDate, programData);
     }
-
-    // TODO: incompleteActivities has UTC tmezone. Make sure that it works correctly.
-    // TODO: Make sure incompleteActivities is sorted in order of the date object.
 
     return (
       <tbody>
@@ -62,32 +59,20 @@ const Calendar: React.FC = () => {
     );
   };
 
+  // Handle error states and loading conditions
   if (error) {
     return <div>Error while fetching data!</div>;
   }
 
-  if (!programData) {
-    return (
-      <div className="calendar">
-        <div className="header">
-          <h1>Weekly Program</h1>
-        </div>
-        <table className="calendar-table">
-          <Weekdays currentDate={currentDate} />
-          {renderDays()}
-        </table>
-      </div>
-    );
-  }
-
+  // Default render of the calendar with or without data
   return (
     <div className="calendar">
       <div className="header">
         <h1>Weekly Program</h1>
       </div>
       <table className="calendar-table">
-        <Weekdays currentDate={currentDate} />
-        {renderDays()}
+        <Weekdays currentDate={currentDate} /> {/* Display weekday headers */}
+        {renderDays()} {/* Render the calendar grid with activities */}
       </table>
     </div>
   );

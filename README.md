@@ -7,6 +7,19 @@ This project implements a React-based calendar application. The application disp
 * Testing: This project implements basic unit tests on both server and UI side.
 * Security: The project implements security features to ensure safe transmission of data.
 
+## Prerequisite
+This application was built with
+* node v20.12.0
+* npm 10.5.2
+```
+node -v
+v20.12.0
+
+npm -v
+10.5.2
+```
+This application has been tested on Google Chrome to ensure compatibility and optimal performance. For development, Visual Studio Code was the preferred Integrated Development Environment (IDE), leveraging its comprehensive support for JavaScript and Node.js.
+
 ## Project Structure
 The project is divided into two main directories to separate the frontend and backend code, ensuring clear modularity and easier dependency management. Here is an overview of the structure with brief description.
 
@@ -317,28 +330,49 @@ npm test
 Additionally, I would like to point out that my frontend test case for hook was failing because I could not mock the EventSource(). I would take a deeper look on that, and probably update this pull request, in the near future if I get time.
 
 ## Demo
-Assuming that both client and server are running, follow these instructions to run the `example/program.json`.
+Assuming that both server and client are running, follow these instructions to run the `example/program.json`.
 For Winows environment, 
 
 * open Powershell and first login to the server with the default username and password.
 ```
 Invoke-WebRequest -Uri "http://localhost:5000/login" -Method Post -ContentType "application/json" -Body '{"username":"admin", "password":"admin123"}'
 ```
-If successful, then the Powershell would receive a token.
+If successful, then the Powershell would receive a token. For example:
+```
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzMzk2Mzk5LCJleHAiOjE3MTMzOTk5OTl9.5ELykszfWI9v42QNgoLpgF-cQJBBDwSKk_jT7BIIDiU"}
+RawContent        : HTTP/1.1 200 OK
+...
+```
+
+Set the token to a variable
 ```
 $token = 'your_jwt_token_here' 
-# For example, $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzMzk2Mzk5LCJleHAiOjE3MTMzOTk5OTl9.5ELykszfWI9v42QNgoLpgF-cQJBBDwSKk_jT7BIIDiU'
+```
 
-# Setup the header with the authorization including the token
+For example, 
+```
+$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzMzk2Mzk5LCJleHAiOjE3MTMzOTk5OTl9.5ELykszfWI9v42QNgoLpgF-cQJBBDwSKk_jT7BIIDiU'
+```
+
+Setup the header with the authorization including the token
+```
 $headers = @{
     "Authorization" = "Bearer $token"
     "Content-Type" = "application/json"
 }
+```
+Go to the folder containing the `program.json` file. For example, in this assignment, this json file exists in `/examples` folder.
+```
+cd examples
+```
 
-# Making the POST request
+Making the POST request
+```
 Invoke-WebRequest -Uri "http://localhost:5000/api/treatment" -Method Post -Headers $headers -InFile ".\program.json"
 ```
-Following the above steps, check the React app for the output.
+Check the React app for the output.
 
 
 ## Conclusion
@@ -346,5 +380,6 @@ This project demonstrates the use of SSE in a full-stack JavaScript application 
 
 ## Additional text
 
-Why TypeScript 4.9.5?
+1. **Why TypeScript 4.9.5?**
+
 The project uses react-scripts@5.0.1, which has specific peer dependency requirements for TypeScript. Using TypeScript version 4.9.5 ensures that there are no compatibility issues with the build and tooling provided by react-scripts. Higher versions of TypeScript have led to conflicts during project setup and build processes, as identified during initial development attempts.

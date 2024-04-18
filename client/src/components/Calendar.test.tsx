@@ -8,7 +8,7 @@ import * as useSSEHook from '../hooks/useSSE'; // Import all from the hook modul
 import { ProgramDay, ProgramData } from '../types/calendarTypes';
 
 // Mock the entire module that exports useSSE
-jest.mock('../../hooks/useSSE');
+jest.mock('../hooks/useSSE');
 
 describe('Calendar Component', () => {
     beforeEach(() => {
