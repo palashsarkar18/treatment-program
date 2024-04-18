@@ -2,10 +2,10 @@
 This project implements a React-based calendar application. The application displays a 3-week treatment program. In addition to the React application, this project also includes a server running, that receives the treatment program as JSON file, and calls the React app to visualize the data on a calendar interface.
 
 ## Scope of this project
-* Frontend: A React-based app for rendering the calendar UI.
-* Backend: A TypeScript/ExpressJs based server with endpoints to receive the program as JSON, and sends it to the frontend using Server-Sent Events (SSE) approach.
-* Testing: This project implements basic unit tests on both server and UI side.
-* Security: The project implements security features to ensure safe transmission of data.
+* **Client**: A React-based app for rendering the calendar UI.
+* **Server**: A TypeScript/ExpressJs based server with endpoints to receive the program as JSON, and sends it to the frontend using Server-Sent Events (SSE) approach.
+* **Testing**: This project implements basic unit tests on both server and UI side.
+* **Security**: The project implements security features to ensure safe transmission of data.
 
 ## Prerequisite
 This application was built with
@@ -291,10 +291,21 @@ Error:
 ## Setup and Installation
 Clone the repository
 ```
-git clone https://github.com/your-repo/my-app.git
-cd my-app
-// TODO: Checkout to the correct branch, fix the project name
+git clone git@github.com:meru-health/technical-assignment-palash-sarkar.git
+cd technical-assignment-palash-sarkar
 ```
+Check that there are two branches: `main` and `feature/treatment-calendar`.
+```
+git branch
+
+  feature/treatment-calendar
+* main
+```
+
+Switch to the `feature/treatment-calendar` branch.
+```
+git checkout feature/treatment-calendar
+``` 
 
 Install the backend dependency, and make a build
 ```
@@ -313,9 +324,8 @@ To run test, use the command,
 npm test
 ```
 
-Now, install the frontend dependencies, run the build, and start the app
+Now, install the frontend dependencies, run the build, and start the app in another powershell tab.
 ```
-cd ..
 cd client
 npm install
 npm run build
@@ -331,9 +341,10 @@ Additionally, I would like to point out that my frontend test case for hook was 
 
 ## Demo
 Assuming that both server and client are running, follow these instructions to run the `example/program.json`.
-For Winows environment, 
 
-* open Powershell and first login to the server with the default username and password.
+**For Windows environment**, 
+
+open another Powershell tab and first login to the server with the default username and password.
 ```
 Invoke-WebRequest -Uri "http://localhost:5000/login" -Method Post -ContentType "application/json" -Body '{"username":"admin", "password":"admin123"}'
 ```
@@ -363,16 +374,50 @@ $headers = @{
     "Content-Type" = "application/json"
 }
 ```
-Go to the folder containing the `program.json` file. For example, in this assignment, this json file exists in `/examples` folder.
+Go to the folder containing the `program.json` file. For example, in this assignment, this json file exists in [`/examples`](/examples/) folder.
 ```
 cd examples
 ```
 
-Making the POST request
+Make the POST request
 ```
 Invoke-WebRequest -Uri "http://localhost:5000/api/treatment" -Method Post -Headers $headers -InFile ".\program.json"
 ```
 Check the React app for the output.
+
+**For MacOS or any Unix-like system**,
+
+open another terminal tab and first login to the server with the default username and password.
+```
+# Login URL
+LOGIN_URL="http://localhost:5000/login"
+
+# User credentials (example: using 'admin' and 'admin123')
+USERNAME="admin"
+PASSWORD="admin123"
+
+# Making the POST request using curl
+curl -X POST $LOGIN_URL \
+     -H "Content-Type: application/json" \
+     -d "{\"username\":\"$USERNAME\", \"password\":\"$PASSWORD\"}"
+```
+
+Go to the folder containing the program.json file. For example, in this assignment, this json file exists in [/examples](/examples/) folder.
+```
+cd examples
+```
+Make the POST request with the token received earlier
+```
+# Assuming $TOKEN holds your JWT
+TOKEN='your_jwt_token_here'
+
+# Making the POST request using curl
+curl -X POST "http://localhost:5000/api/treatment" \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d @program.json
+```
+
 
 
 ## Conclusion
