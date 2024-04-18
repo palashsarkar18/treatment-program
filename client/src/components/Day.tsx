@@ -1,6 +1,6 @@
 import React from "react";
 import { format, isSameMonth, isSameDay, getWeek } from "date-fns";
-import { ProgramDay } from "../../types/calendarTypes";
+import { ProgramDay } from "../types/calendarTypes";
 
 // Define the props expected by the Day component.
 interface DayProps {
@@ -40,7 +40,7 @@ const Day: React.FC<DayProps> = ({ day, currentDate, dayActivity }) => {
   // Render the table cell with appropriate styles and content.
   return (
     <td className={dayClasses} key={format(day, "yyyy-MM-dd")}>
-      <div className={numberClasses}>{format(day, "d")}</div>
+      <h2 className={numberClasses}>{format(day, "d")}</h2>
       <h3>
         {dayActivity && dayActivity.title
           ? dayActivity.title.toUpperCase() 

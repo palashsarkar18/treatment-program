@@ -3,11 +3,7 @@ This project implements a real-time calendar application using Server-Sent Event
 
 TODO:
 1. Unit test cases for components.
-2. Integration test case
-3. Use of Postman?
-4. Algorithm fixes
-5. Add security? Very basic one
-6. Future activity of input should always be false.
+2. Future activity of input should always be false.
 
 ## Project Structure
 The project is divided into two main directories to separate the frontend and backend code, ensuring clear modularity and easier dependency management.
@@ -187,3 +183,47 @@ This project demonstrates the use of SSE in a full-stack JavaScript application 
 
 Why TypeScript 4.9.5?
 The project uses react-scripts@5.0.1, which has specific peer dependency requirements for TypeScript. Using TypeScript version 4.9.5 ensures that there are no compatibility issues with the build and tooling provided by react-scripts. Higher versions of TypeScript have led to conflicts during project setup and build processes, as identified during initial development attempts.
+
+
+# Assuming $token holds your JWT
+$token = 'your_jwt_token_here'
+$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzMzk2Mzk5LCJleHAiOjE3MTMzOTk5OTl9.5ELykszfWI9v42QNgoLpgF-cQJBBDwSKk_jT7BIIDiU'
+
+# Setting up the header with the Authorization including the token
+$headers = @{
+    "Authorization" = "Bearer $token"
+    "Content-Type" = "application/json"
+}
+
+# Making the POST request
+$response = Invoke-WebRequest -Uri "http://localhost:5000/login" -Method Post -ContentType "application/json" -Body '{"username":"admin", "password":"admin123"}'
+
+$response.Content
+
+# Assuming $token holds your JWT
+$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzEzNDM4MDMxLCJleHAiOjE3MTM0NDE2MzF9.79tqMF7gLkq688qSLxGkJMg2lYHGjvbfdREslBFyho8'
+
+# Setting up the header with the Authorization including the token
+$headers = @{
+    "Authorization" = "Bearer $token"
+    "Content-Type" = "application/json"
+}
+
+# Making the POST request
+$response = Invoke-WebRequest -Uri "http://localhost:5000/api/treatment" -Method Post -Headers $headers -InFile ".\program_january.json"
+Write-Output $response.Content
+
+
+
+
+# Setting up the header with the Authorization including the token
+$headers = @{
+    "Authorization" = "Bearer $token"
+    "Content-Type" = "application/json"
+}
+
+# Making the POST request
+$response = Invoke-WebRequest -Uri "http://localhost:5000/api/treatment" -Method Post -Headers $headers -InFile ".\program_january.json"
+Write-Output $response.Content
+
+

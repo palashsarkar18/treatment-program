@@ -3,9 +3,9 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Calendar from './Calendar';
 import { advanceTo, clear } from 'jest-date-mock';
-import * as utility from '../../utils/utility'; // Import utility functions to mock them
-import * as useSSEHook from '../../hooks/useSSE'; // Import all from the hook module
-import { ProgramDay, ProgramData } from '../../types/calendarTypes';
+import * as utility from '../utils/utility'; // Import utility functions to mock them
+import * as useSSEHook from '../hooks/useSSE'; // Import all from the hook module
+import { ProgramDay, ProgramData } from '../types/calendarTypes';
 
 // Mock the entire module that exports useSSE
 jest.mock('../../hooks/useSSE');

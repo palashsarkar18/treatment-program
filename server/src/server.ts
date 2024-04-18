@@ -47,15 +47,6 @@ let treatmentProgram: any = null;
 app.post('/login', async (req: Request, res: Response) => {
     console.log("Received login request with body:", req.body);
 
-    // const passwordX = 'admin123';
-    // bcrypt.hash(passwordX, 10, function(err, hash) {
-    //     if (err) {
-    //         console.error("Error generating hash:", err);
-    //         return;
-    //     }
-    //     console.log('Hash for', password, ':', hash);
-    // });
-
     const { username, password } = req.body;
     const user = users[username];
 

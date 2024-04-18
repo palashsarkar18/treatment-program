@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Day from './Day';
 import { format } from 'date-fns';
-import { ProgramDay } from '../../types/calendarTypes';
+import { ProgramDay } from '../types/calendarTypes';
 import { advanceTo, clear } from 'jest-date-mock';
 
 // Describe block defines a suite of tests for the Day component

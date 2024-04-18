@@ -2,10 +2,10 @@
 
 .calendar {
   width: 100%;
-  max-width: 1000px; /* or the width specified in your design */
+  max-width: 1000px;
   margin: 0 auto;
   border: 2px solid var(--calendar-green-color);
-  box-shadow: 0 0 5px var(--calendar-black-color); /* Horizontal offset, vertical offset, blur radius, color */
+  box-shadow: 0 0 5px var(--calendar-black-color);
 }
 
 .calendar-table {
@@ -17,8 +17,8 @@
 
 .header {
   display: flex;
-  justify-content: center; /* Center children horizontally */
-  align-items: center; /* Center children vertically */
+  justify-content: center;
+  align-items: center;
   background-color: var(--calendar-white-color);
   color: var(--calendar-black-color);
   font-size: 20px;
@@ -32,11 +32,11 @@
 
 .header-cell,
 .cell {
-  border-right: 1px solid var(--calendar-green-color); /* Adjust or remove borders */
+  border-right: 1px solid var(--calendar-green-color);
   border-bottom: 1px solid var(--calendar-green-color);
-  padding: 10px; /* Adjust the padding as per your design */
-  border: 1px solid var(--calendar-green-color); /* Ensure border is the same for both */
-  text-align: center; /* Center the text in the cell */
+  padding: 1px;
+  border: 1px solid var(--calendar-green-color);
+  text-align: center;
 }
 
 .cell {
@@ -44,7 +44,7 @@
 }
 
 .header-cell {
-  width: 14.28%; /* 100% divided by 7 days to distribute width equally */
+  width: 14.3%; /* 100% divided by 7 days to distribute width equally */
   border-top: 1px solid var(--calendar-green-color);
   border-left: 1px solid var(--calendar-green-color);
 }
@@ -58,26 +58,27 @@
 .cell:hover .date-number.activity {
   background-color: var(
     --calendar-green-color
-  ); /* Adjust selection/hover color */
-  color: var(--calendar-white-color); /* Adjust text color on hover/selection */
+  );
+  color: var(--calendar-white-color);
 }
 
 .disabled {
-  /* visibility: hidden; The element becomes invisible, but the layout space is preserved */
-  color: transparent; /* Ensures text is transparent just in case visibility isn't respected */
+  color: transparent;
 }
 
 h1 {
   font-family: var(--font-fjalla-one);
   font-size: var(--h1-font-size);
-  /* line-height: var(--h1-line-height); */
-  /* font-weight: var(--h1-font-weight); */
+  line-height: var(--h1-line-height);
+  font-weight: var(--h1-font-weight);
+  margin: 5px;
 }
 
 h2 {
   font-family: var(--font-libre-franklin);
   font-size: var(--h2-font-size);
   font-weight: var(--h2-font-weight);
+  margin: 5px;
 }
 
 h3 {
@@ -85,6 +86,7 @@ h3 {
   font-size: var(--h3-font-size);
   line-height: var(--h3-line-height);
   font-weight: var(--h3-font-weight);
+  margin: 5px;
 }
 
 th {
@@ -94,11 +96,7 @@ th {
   box-sizing: border-box;
 }
 
-td {
-  font-family: var(--font-fjalla-one);
-  /* font-family: var(--font-libre-franklin); */
-  /* font-family: var(--font-work-sans); */
-  /* font-size: var(--th-font-size); */
-  font-weight: var(--td-font-weight);
-  /* box-sizing: border-box; */
+thead, th {
+  box-sizing: border-box;
 }
+

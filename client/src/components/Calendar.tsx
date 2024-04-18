@@ -2,15 +2,15 @@ import React from 'react';
 import { format } from "date-fns";
 import "./Calendar.css"; // Make sure the path matches where you place your CSS file
 
-import { ProgramDay, ProgramData } from "../../types/calendarTypes";
+import { ProgramDay, ProgramData } from "../types/calendarTypes";
 import {
   generateMonth,
   findIncompleteActivities,
   getDayActivity,
-} from "../../utils/utility";
+} from "../utils/utility";
 import Day from "./Day";
 import Weekdays from "./Weekdays";
-import { useSSE } from '../../hooks/useSSE'; // Import the custom SSE hook
+import { useSSE } from '../hooks/useSSE'; // Import the custom SSE hook
 
 
 // TODO: Check validity of programData
